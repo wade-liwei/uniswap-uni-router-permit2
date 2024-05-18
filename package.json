@@ -14,7 +14,7 @@
   "dependencies": {
     "@uniswap/permit2-sdk": "^1.2.0",
     "@uniswap/sdk-core": "^4.0.7",
-    "@uniswap/smart-order-router": "^3.16.23",
+    "@uniswap/smart-order-router": "^3.26.1",
     "dotenv": "^16.1.4",
     "ethers": "^5.6.6",
     "prettier": "^2.8.8"

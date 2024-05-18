@@ -12,11 +12,13 @@ import {
   DAI,
   USDT,
   WETH,
+  WMCAT,
   chainId,
   getSigner,
   walletAddress,
   getEthersProvider,
-  uniswapRouterAddress
+  uniswapRouterAddress,
+  LIWEI
 } from './constants.js';
 
 const ethersProvider = getEthersProvider();
@@ -35,6 +37,10 @@ async function approvePermit2Contract(erc20Address, amount) {
 async function getAllowanceAmount(erc20TokenAddress, spender) {
   const erc20 = new ethers.Contract(erc20TokenAddress, erc20Abi, ethersSigner);
   const allowance = await erc20.allowance(walletAddress, spender);
+  
+
+  console.log("allowance-----",allowance)
+
   return allowance;
 }
 
@@ -50,7 +56,12 @@ async function getSwapRoute(
     amountInWei.toString()
   );
 
+
+  console.log("AlphaRouter",chainId)
+
+  console.log("AlphaRouter  chainId",chainId)
   const router = new AlphaRouter({ chainId, provider: ethersProvider });
+  console.log("router.route  begin")
   const route = await router.route(
     inputAmount,
     destToken,
@@ -81,6 +92,7 @@ async function getSwapRoute(
       }
     }
   );
+  console.log("router.route  end")
   console.log(`Quote Exact In: ${amountInWei}  -> ${route.quote.toExact()}`);
   return route;
 }
@@ -88,8 +100,14 @@ async function getSwapRoute(
 async function executeSwap() {
   // swap basic info
   // NOTE: not handling native currency swaps here
-  const sourceToken = USDT;
-  const destToken = WETH;
+  // const sourceToken = USDT;
+  // const destToken = WETH;
+
+  const sourceToken = LIWEI;
+  const destToken = WMCAT;
+
+  // const sourceToken = LIWEI;
+  // const destToken = WMCAT;
   const amount = 1000000;
 
   const amountInWei = ethers.utils.parseUnits(
@@ -204,19 +222,32 @@ async function executeSwap() {
 
   console.log('route calldata:', route.methodParameters.calldata);
 
+  //const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+
+  const V3_SWAP_ROUTER_ADDRESS = '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD'
+
+  console.log("uniswapRouterAddress",uniswapRouterAddress)
+  console.log("V3_SWAP_ROUTER_ADDRESS",V3_SWAP_ROUTER_ADDRESS)
+
+
+
   // create transaction arguments for swap
   const txArguments = {
     data: route.methodParameters.calldata,
     to: uniswapRouterAddress,
-    value: BigNumber.from(route.methodParameters.value),
+    //to: V3_SWAP_ROUTER_ADDRESS,
+    // value: BigNumber.from(route.methodParameters.value),
+    value: BigNumber.from(0),
     from: walletAddress,
     gasPrice: route.gasPriceWei,
     gasLimit: BigNumber.from('1000000')
+
+    //333,334
   };
 
   // send out swap transaction
-  // const transaction = await signerOrProvider.sendTransaction(txArguments);
-  // console.log('swap transaction', transaction.hash);
+  const transaction = await ethersSigner.sendTransaction(txArguments);
+  console.log('swap transaction', transaction.hash);
 }
 
 executeSwap();
