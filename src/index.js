@@ -18,7 +18,9 @@ import {
   walletAddress,
   getEthersProvider,
   uniswapRouterAddress,
-  LIWEI
+  LIWEI,
+  BASED,
+  USDC
 } from './constants.js';
 
 const ethersProvider = getEthersProvider();
@@ -103,12 +105,22 @@ async function executeSwap() {
   // const sourceToken = USDT;
   // const destToken = WETH;
 
-  const sourceToken = LIWEI;
-  const destToken = WMCAT;
+  // const sourceToken = LIWEI;
+  // const destToken = WMCAT;
+
+  const sourceToken = BASED;
+  const destToken = USDC;
+
+  console.log("begin")
+  console.log(new Date().toLocaleTimeString());
+
+
+  // BASED,
+  // USDC
 
   // const sourceToken = LIWEI;
   // const destToken = WMCAT;
-  const amount = 1000000;
+  const amount = 1;
 
   const amountInWei = ethers.utils.parseUnits(
     amount.toString(),
@@ -149,12 +161,19 @@ async function executeSwap() {
   // for signature transfer probably it has to be
   // a prime number or something. checks uniswap docs.
   // const nonce = 1;
+
+  console.log("nonce begin")
+  console.log(new Date().toLocaleTimeString());
+
   const nonce = await allowanceProvider.getNonce(
     sourceToken.address,
     walletAddress,
     uniswapRouterAddress
   );
   console.log('nonce value:', nonce);
+
+  console.log("nonce end")
+  console.log(new Date().toLocaleTimeString());
 
   // create permit with SignatureTransfer
   // const permit = {
@@ -210,8 +229,12 @@ async function executeSwap() {
   if (address !== walletAddress)
     throw new Error('signature verification failed');
   else console.log(`signature verified, signed by: ${address}`);
-
   // get swap route for tokens
+
+
+  console.log("router begin")
+  console.log(new Date().toLocaleTimeString());
+
   const route = await getSwapRoute(
     sourceToken,
     destToken,
@@ -220,7 +243,12 @@ async function executeSwap() {
     signature
   );
 
+
+
   console.log('route calldata:', route.methodParameters.calldata);
+
+  console.log("router end")
+  console.log(new Date().toLocaleTimeString());
 
   //const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
 
@@ -244,6 +272,9 @@ async function executeSwap() {
 
     //333,334
   };
+
+  console.log("send")
+  console.log(new Date().toLocaleTimeString());
 
   // send out swap transaction
   const transaction = await ethersSigner.sendTransaction(txArguments);

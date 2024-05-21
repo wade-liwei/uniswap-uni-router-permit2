@@ -103,3 +103,30 @@ export const WMCAT = new Token(
   'Watermelon Cat'
 );
 
+
+
+
+export const BASED = new Token(
+  chainId,
+  chainId === ChainId.MAINNET
+    ? '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+    : '0x07d15798a67253D76cea61F0eA6F57AeDC59DffB', // goerli   
+  18,
+  'BASED',
+  'Based Coin'
+);
+
+
+
+export const USDC = new Token(
+  chainId,
+  chainId === ChainId.MAINNET
+    ? '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+    : '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // goerli   
+  6,
+  'USDC',
+  'USDC'
+);
+
+
+
